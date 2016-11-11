@@ -16,7 +16,7 @@ abstract class actions
     public abstract function getByName($pdo, $name);
     public abstract function getWhere($pdo, $paramWhere);
     public abstract function orderByKeyword($pdo,$keyword);
-    public abstract function getByJoin($pdo);
+    public abstract function getByJoin($pdo,$columToJoin,$paramToJoin);
 
 //Fonctions annexes
     #COUNT

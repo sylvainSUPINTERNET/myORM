@@ -5,13 +5,12 @@ require_once './config/connection.php';
 
 //function +
 require_once './abstract/actions.php';
-require_once './interfaces/logManagement.php';
 
 //logs management
+require_once './interfaces/logManagement.php';
 
 
-// indiquer les dépendances des autres entités si nécessaire
-
+//CAN ADD YOUR DEPENDENCIES IF ITS REQUIRED
 
 class Articles extends actions implements logManagement
 {
@@ -145,8 +144,6 @@ class Articles extends actions implements logManagement
         return $stmt;
     }
 
-
-    //_________________________________________ RECUPERATION ___________________________________________________________
     public function getAll($pdo)  //all
     {
         $timestamp_debut = microtime(true);
@@ -236,13 +233,25 @@ class Articles extends actions implements logManagement
         return $response;
     }
 
-    public function getByJoin($pdo)
+    public function getByJoin($pdo, $columnToJoin, $paramToJoin)
     {
         $timestamp_debut = microtime(true);
 
-        $stmt = $pdo->prepare("SELECT * FROM `articles` WHERE `name` = '$paramWhere'");
+        $stmt = $pdo->prepare("SELECT * FROM `articles` INNER JOIN $columnToJoin ON articles.$paramToJoin = $columnToJoin.$paramToJoin");
         $stmt->execute();
         $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        if (empty($response)) {
+            $timestamp_fin = microtime(true);
+            $difference_ms = $timestamp_fin - $timestamp_debut;
+            $messageError = " CHECK YOURS PARAMETERS : COLUMN NAME AND CONDITION PARAMETER";
+            $this->logError($stmt, $difference_ms, $messageError);
+            return $response;
+        } else {
+            $timestamp_fin = microtime(true);
+            $difference_ms = $timestamp_fin - $timestamp_debut;
+            $this->logMessage($stmt, $difference_ms);
+            return $response;
+        }
 
     }
 

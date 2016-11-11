@@ -11,7 +11,7 @@ require_once 'Entity/Articles.php'; // Entity
 
 
 $article = new Articles();
-$article->getByJoin($pdo);
+$article->getByJoin($pdo,'news','title');
 
 
 
