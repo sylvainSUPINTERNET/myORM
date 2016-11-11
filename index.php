@@ -8,15 +8,22 @@ require_once 'config/connection.php';
 require_once 'Entity/Articles.php'; // Entity
 
 
-//__________________________________________ Interface => Where();
-require_once 'interfaces/WhereInterface.php';
-
-
 
 
 $article = new Articles();
-$test = $article->getAll($pdo);
+$article->getByJoin($pdo);
 
+
+
+
+
+
+
+//$test = $article->getAll($pdo);
+
+
+/*$ttest = $article->orderByKeyword($pdo, "noez");
+var_dump($ttest);*/
 
 
 

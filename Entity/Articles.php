@@ -5,7 +5,6 @@ require_once './config/connection.php';
 
 //function +
 require_once './abstract/actions.php';
-require_once './interfaces/WhereInterface.php';
 require_once './interfaces/logManagement.php';
 
 //logs management
@@ -14,7 +13,7 @@ require_once './interfaces/logManagement.php';
 // indiquer les dépendances des autres entités si nécessaire
 
 
-class Articles extends actions implements Where, logManagement
+class Articles extends actions implements logManagement
 {
 
     protected $id;
@@ -96,7 +95,6 @@ class Articles extends actions implements Where, logManagement
 
     }
 
-    // PROBLEME ICI ....
     public function create($pdo, $id, $name, $contenu) // create directement pas besoin de set les valeur au préalable
     {
         $timestamp_debut = microtime(true);
@@ -106,7 +104,6 @@ class Articles extends actions implements Where, logManagement
         $stmt->bindValue(':name', $name);
         $stmt->bindValue(':contenu', $contenu);
         $stmt->execute();
-        var_dump($stmt);
 
         $timestamp_fin = microtime(true);
         $difference_ms = $timestamp_fin - $timestamp_debut;
@@ -202,7 +199,26 @@ class Articles extends actions implements Where, logManagement
         }
     }
 
-    // ---------------------------------> IMPLEMENT METHOD
+    public function orderByKeyword($pdo, $keyword)
+    {
+        $timestamp_debut = microtime(true);
+        $stmt = $pdo->prepare("SELECT * FROM articles ORDER BY '$keyword'");
+        $stmt->execute();
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
+        if (empty($response) || $response == null) {
+            $timestamp_fin = microtime(true);
+            $errorMsg = "REQUEST DOSNT WORK !  CHECK YOUR PARAMETERS COLUMN NAME REQUIRED DECLARED AS STRING WITH : 'foo' ";
+            $difference_ms = $timestamp_fin - $timestamp_debut;
+            $this->logError($stmt, $difference_ms, $errorMsg);
+        }
+        $timestamp_fin = microtime(true);
+        $difference_ms = $timestamp_fin - $timestamp_debut;
+        $this->logMessage($stmt, $difference_ms);
+
+        return $response;
+
+    }
+
     public function getWhere($pdo, $paramWhere)
     {
         $timestamp_debut = microtime(true);
@@ -220,9 +236,13 @@ class Articles extends actions implements Where, logManagement
         return $response;
     }
 
-    public function setWhere($pdo, $paramWhere)
+    public function getByJoin($pdo)
     {
-        // dont know ...
+        $timestamp_debut = microtime(true);
+
+        $stmt = $pdo->prepare("SELECT * FROM `articles` WHERE `name` = '$paramWhere'");
+        $stmt->execute();
+        $response = $stmt->fetchAll(PDO::FETCH_OBJ);
 
     }
 
@@ -307,13 +327,13 @@ class Articles extends actions implements Where, logManagement
         $stmt = $pdo->prepare("SELECT * FROM articles WHERE $where IN ($value)");
         $stmt->execute();
         $valueFind = $stmt->fetchAll(PDO::FETCH_OBJ);
-        if(empty($valueFind)){
+        if (empty($valueFind)) {
             $timestamp_fin = microtime(true);
             $difference_ms = $timestamp_fin - $timestamp_debut;
             $error = " request return is empty, check column name and condition parameters, or the values dosnt exist ! ";
             $this->logError($stmt, $difference_ms, $error);
             return $valueFind;
-        }else{
+        } else {
             $timestamp_fin = microtime(true);
             $difference_ms = $timestamp_fin - $timestamp_debut;
             $this->logMessage($stmt, $difference_ms);
