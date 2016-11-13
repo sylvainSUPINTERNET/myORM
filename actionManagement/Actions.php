@@ -1,7 +1,7 @@
 <?php
 
 
-abstract class actions
+abstract class Actions
 {
 
 //CRUD
@@ -36,7 +36,7 @@ abstract class actions
     public abstract function countWhere($column, $paramWhere);
 
     #IN
-    public abstract function in($paramWhere, $inValue);
+    public abstract function in($column, $inValue);
 
 
 }

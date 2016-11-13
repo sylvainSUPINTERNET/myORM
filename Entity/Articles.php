@@ -1,19 +1,15 @@
 <?php
-// connection
+// connection BDD
 require_once './config/PDOManager.php';
 
+// actions
+require_once './actionManagement/Actions.php';
 
-//function +
-require_once './abstract/actions.php';
-
-//logs management
-require_once './interfaces/logManagement.php';
-
-
-//CAN ADD YOUR DEPENDENCIES IF ITS REQUIRED
+// logs
+require_once './logManagement/logManagement.php';
 
 
-class Articles extends actions implements logManagement
+class Articles extends Actions implements logManagement
 {
 
     protected $id;
@@ -55,6 +51,7 @@ class Articles extends actions implements logManagement
     { //security with private
         $pdo = new PDOManager();
         $pdo = $pdo->bdd();
+
         return $pdo;
     }
 
@@ -63,7 +60,7 @@ class Articles extends actions implements logManagement
     {
         $date = new DateTime();
         $dateString = $date->format('Y-m-d H:i:s');
-        $fp = fopen("./request.log", "a+"); //utiliser a+ creer le fichier si il existe pas
+        $fp = fopen("./request.log", "a+");
         fputs($fp, "REQUEST_ARG =>" . $stmt->queryString . " DATE_HOUR =>[" . $dateString . "]" . " EXECUTION_TIME =>" . $timeRequest . " ms" . PHP_EOL);
         fclose($fp);
     }
@@ -72,13 +69,13 @@ class Articles extends actions implements logManagement
     {
         $date = new DateTime();
         $dateString = $date->format('Y-m-d H:i:s');
-        $fp = fopen("./error.log", "a+"); //utiliser a+ creer le fichier si il existe pas
+        $fp = fopen("./error.log", "a+");
         fputs($fp, "REQUEST_ARG =>" . $stmt->queryString . " DATE_HOUR =>[" . $dateString . "]" . " EXECUTION_TIME =>" . $timeRequest . " ms" . " ERROR_MESSAGE => " . $errorMessage . PHP_EOL);
         fclose($fp);
     }
 
     // CRUD
-    public function save($id, $name, $contenu) // utiliser setter getter sinon save marche pas
+    public function save($id, $name, $contenu) // use set and get method before use save method
     {
         $timestamp_debut = microtime(true);
 
@@ -91,11 +88,10 @@ class Articles extends actions implements logManagement
         $timestamp_fin = microtime(true);
         $difference_ms = $timestamp_fin - $timestamp_debut;
         $this->logMessage($stmt, $difference_ms);
-        return "Nouvelle Articles sauvegarder !";
 
     }
 
-    public function create($id, $name, $contenu) // create directement pas besoin de set les valeur au préalable
+    public function create($id, $name, $contenu)
     {
         $timestamp_debut = microtime(true);
 
@@ -108,7 +104,6 @@ class Articles extends actions implements logManagement
         $timestamp_fin = microtime(true);
         $difference_ms = $timestamp_fin - $timestamp_debut;
         $this->logMessage($stmt, $difference_ms);
-        return "Nouvelle Articles ajouté !";
 
     }
 
@@ -124,7 +119,7 @@ class Articles extends actions implements logManagement
         $timestamp_fin = microtime(true);
         $difference_ms = $timestamp_fin - $timestamp_debut;
         $this->logMessage($stmt, $difference_ms);
-        return "Article id : " . $id . " bien delete !";
+        return $stmt;
     }
 
     public function update($columnToChange, $newValue, $whereColum, $whereValue)
@@ -154,9 +149,16 @@ class Articles extends actions implements logManagement
         $stmt->execute();
         $response = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-        $timestamp_fin = microtime(true);
-        $difference_ms = $timestamp_fin - $timestamp_debut;
-        $this->logMessage($stmt, $difference_ms);
+        if (empty($response)) {
+            $errorMessage = " RESULT OF YOUR REQUEST IS EMPTY, CHECK IF YOUR DATABASE IS NOT EMPTY !";
+            $timestamp_fin = microtime(true);
+            $difference_ms = $timestamp_fin - $timestamp_debut;
+            $this->logError($stmt, $difference_ms, $errorMessage);
+        } else {
+            $timestamp_fin = microtime(true);
+            $difference_ms = $timestamp_fin - $timestamp_debut;
+            $this->logMessage($stmt, $difference_ms);
+        }
         return $response;
     }
 
@@ -169,9 +171,16 @@ class Articles extends actions implements logManagement
         $stmt->execute();
         $response = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-        $timestamp_fin = microtime(true);
-        $difference_ms = $timestamp_fin - $timestamp_debut;
-        $this->logMessage($stmt, $difference_ms);
+        if (empty($response)) {
+            $errorMessage = " RESULT OF YOUR REQUEST IS EMPTY, CHECK IF YOUR ID EXIST IN YOUR DATABASE !";
+            $timestamp_fin = microtime(true);
+            $difference_ms = $timestamp_fin - $timestamp_debut;
+            $this->logError($stmt, $difference_ms, $errorMessage);
+        } else {
+            $timestamp_fin = microtime(true);
+            $difference_ms = $timestamp_fin - $timestamp_debut;
+            $this->logMessage($stmt, $difference_ms);
+        }
         return $response;
     }
 
@@ -221,16 +230,19 @@ class Articles extends actions implements logManagement
     {
         $timestamp_debut = microtime(true);
 
-        $stmt = $this->getBdd()->prepare("SELECT * FROM `articles` WHERE `name` = '$paramWhere'");
+        $stmt = $this->getBdd()->prepare("SELECT * FROM `articles` WHERE $paramWhere");
         $stmt->execute();
         $response = $stmt->fetchAll(PDO::FETCH_OBJ);
         if (empty($response)) {
-            throw new Exception("La requete n'a pas aboutit, veuillez VERIFIER VOS PARAMETRE");
+            $timestamp_fin = microtime(true);
+            $errorMsg = "REQUEST DOSNT WORK !  CHECK YOUR PARAMETERS CONDITION FOR USE WHERE ! ";
+            $difference_ms = $timestamp_fin - $timestamp_debut;
+            $this->logError($stmt, $difference_ms, $errorMsg);
+        } else {
+            $timestamp_fin = microtime(true);
+            $difference_ms = $timestamp_fin - $timestamp_debut;
+            $this->logMessage($stmt, $difference_ms);
         }
-
-        $timestamp_fin = microtime(true);
-        $difference_ms = $timestamp_fin - $timestamp_debut;
-        $this->logMessage($stmt, $difference_ms);
         return $response;
     }
 
@@ -271,7 +283,6 @@ class Articles extends actions implements logManagement
             $this->logError($stmt, $difference_ms, $error);
             return $nbFind;
         } else {
-
             $timestamp_fin = microtime(true);
             $difference_ms = $timestamp_fin - $timestamp_debut;
             $this->logMessage($stmt, $difference_ms);

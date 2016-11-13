@@ -1,84 +1,142 @@
 <?php
 
-require_once 'Entity/Articles.php'; // Entity
+// Entities
+require_once 'Entity/Articles.php';
 
-
-
-
-$article = new Articles();
-$test = $article->getByJoin('news','title');
-var_dump($test);
-
+$article = new Articles(); // Entity of test
 
 
 
 
 
 
-//$test = $article->getAll($pdo);
+/* QUICK START => Disable: # on the request and var_dump to test. */
+
+//======================================================================
+//                          CRUD METHOD
+//======================================================================
+
+//-----------------------------------------------------
+// REMOVE(id) ---> logs (Message : yes / Error: NA)
+
+        # $article->remove('788');
+//-----------------------------------------------------
 
 
-/*$ttest = $article->orderByKeyword($pdo, "noez");
-var_dump($ttest);*/
+//-----------------------------------------------------
+// SAVE(id,name,content) with use SET() ---> logs (Message : yes / Error: NA)
 
-
-
-/*
- * CRUD test
-//save
-$id = $article->setId(500);
-$name = $article->setName("salut");
-$contenu = $article->setContenu("Mon contenu lol");
-$article->save($pdo,$id,$name,$contenu);
-
-
-// create
-$test = $article->update($pdo,"name","GERARD","id",7);
-var_dump($test);
-
-*/
-
-
-/*
- * FUNCTION ANNEXE test
-//COUNT
-$lol2 = $article->countAll($pdo);
-var_dump($lol2);
-
-
-$lol = $article->countBy($pdo,"name");
-var_dump($lol);
-
-
-$test = $article->countWhere($pdo,"name","name = 'JEAN' ");
-var_dump($test);
-
-
-$test2 = $article->countWhere($pdo,"name","id > 7 ");
-var_dump($test2);
-
-
-//IN
-$salut = $article->in($pdo,"name","jean");
-var_dump($salut);
-
-$salut2 = $article->in($pdo,"ezaeaeae","eazeaeaea");
-var_dump($salut2);
-*/
+        # $id = $article->setId("1");
+        # $name = $article->setName("JolyTest");
+        # $contenu = $article->setContenu("My content for the test !");
+        # $article->save($id,$name,$contenu);
+//-----------------------------------------------------
 
 
 
+//-----------------------------------------------------
+// CREATE(id,name,content) without SET() ---> logs (Message : yes / Error: NA)
+
+        # $test = $article->create("300","Leonidas","300 vs 1000");
+        # var_dump($test);
+//-----------------------------------------------------
 
 
 
+//-----------------------------------------------------
+// UPDATE(columnToChange, newValue, whereColum, whereValue) ---> logs (Message : yes / Error: NA)
 
-/* Test logOK / logFALSE
-$article = new Articles();
-$article->getByName($pdo,"JEAN");
-$article = new Articles();
-$article->getByName($pdo,"AEZAEAZE");
-*/
-
+        # $test = $article->update('id', '480', 'id', '1');
+        # var_dump($test);
+//-----------------------------------------------------
 
 
+
+//======================================================================
+//                          SELECTION METHOD
+//======================================================================
+
+//-----------------------------------------------------
+// GET_ALL() ---> logs (Message : yes / Error: yes)
+
+        # $test = $article->getAll();
+        # var_dump($test);
+//-----------------------------------------------------
+
+
+//-----------------------------------------------------
+// GET_BY_ID(id) ---> logs (Message : yes / Error: yes)
+
+         # $test = $article->getById('300');
+         # var_dump($test);
+//-----------------------------------------------------
+
+
+//-----------------------------------------------------
+// GET_BY_NAME(name) ---> logs (Message : yes / Error: yes)
+
+         # $test = $article->getByName('GERARD');
+         # var_dump($test);
+//-----------------------------------------------------
+
+
+//-----------------------------------------------------
+// GET_WHERE(paramWhere) ---> logs (Message : yes / Error: yes)
+
+        # $test = $article->getWhere('id = 300');
+        # var_dump($test);
+//-----------------------------------------------------
+
+
+//-----------------------------------------------------
+// ORDER_BY_KEYWORD(keyword) ---> logs (Message : yes / Error: yes)
+
+        # $test = $article->orderByKeyword('id');
+        # var_dump($test);
+//-----------------------------------------------------
+
+
+//-----------------------------------------------------
+// GET_BY_JOIN(columnToJoin, paramToJoin) ---> logs (Message : yes / Error: yes)
+
+        # $test = $article->getByJoin('news', 'title');
+        # var_dump($test);
+//-----------------------------------------------------
+
+
+
+//======================================================================
+//                          SELECTION METHOD
+//======================================================================
+
+//-----------------------------------------------------
+// COUNT_ALL() ---> logs (Message : yes / Error: yes)
+
+        # $test = $article->countAll();
+        # var_dump($test);
+//-----------------------------------------------------
+
+
+//-----------------------------------------------------
+// COUNT_BY(column) ---> logs (Message : yes / Error: yes)
+
+        # $test = $article->countBy('name');
+        # var_dump($test);
+//-----------------------------------------------------
+
+
+//-----------------------------------------------------
+// COUNT_WHERE(column, paramWhere) ---> logs (Message : yes / Error: yes)
+
+        # $test = $article->countWhere('id', 'id < 10');
+        # var_dump($test);
+//-----------------------------------------------------
+
+
+//-----------------------------------------------------
+// INT(column, searchValue) ---> logs (Message : yes / Error: yes)
+
+        # $test = $article->in('id', '4');
+        # var_dump($test);
+//-----------------------------------------------------
 
