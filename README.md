@@ -55,7 +55,9 @@ paramètres / gestion de logs (activer ou non)
 	
  **Executer les commandes suivantes** (Window only sinon adapter)
  
-		php menu-console list ===> Donne la liste des lignes de commandes disponibles
-		php menu-console help ===> Donne la liste de toutes les requêtes de l'entité Article, et leurs spécificitées
+		php menu-console.php list ===> Donne la liste des lignes de commandes disponibles
+		php menu-console.php help ===> Donne la liste de toutes les requêtes de l'entité Article, et leurs spécificitées
+		php menu-console.php crud create ===> Créer un nouvelle article (id auto / name / contenu)
+		php menu-console.php crud remove ===> Supprime un article
 
 
