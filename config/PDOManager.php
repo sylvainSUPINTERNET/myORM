@@ -3,8 +3,8 @@
 
 class PDOManager {
 
-    private $host = 'mysql:host=127.0.0.1;dbname=orm'; // mysql:host=127.0.0.1;dbname=orm
-    private $user = 'root'; // root
+    private $host = ''; // mysql:host=127.0.0.1;dbname=NameBase
+    private $user = ''; // root
     private $passwod = ''; // ''
 
 
