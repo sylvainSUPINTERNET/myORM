@@ -75,12 +75,17 @@ class Articles extends Actions implements logManagement
     }
 
     // CRUD
-    public function save($id, $name, $contenu) // use set and get method before use save method
+    public function save($name, $contenu) // use set and get method before use save method
     {
         $timestamp_debut = microtime(true);
 
+        $getLastId = $this->getBdd()->query('SELECT MAX(id) FROM `articles`');
+        $idFind = $getLastId->fetch();
+        $idStringTmp = $idFind[0];
+        $idInt = intval($idStringTmp+1); //auto id
+        $idString = strval($idInt);
         $stmt = $this->getBdd()->prepare("INSERT INTO `articles`(`id`, `name`, `contenu`) VALUES (:id, :name, :contenu)");
-        $stmt->bindValue(':id', $this->getId());
+        $stmt->bindValue(':id', $idString);
         $stmt->bindValue(':name', $this->getName());
         $stmt->bindValue(':contenu', $this->getContenu());
         $stmt->execute();
@@ -91,12 +96,17 @@ class Articles extends Actions implements logManagement
 
     }
 
-    public function create($id, $name, $contenu)
+    public function create($name, $contenu)
     {
         $timestamp_debut = microtime(true);
 
+        $getLastId = $this->getBdd()->query('SELECT MAX(id) FROM `articles`');
+        $idFind = $getLastId->fetch();
+        $idStringTmp = $idFind[0];
+        $idInt = intval($idStringTmp+1); //auto id
+        $idString = strval($idInt);
         $stmt = $this->getBdd()->prepare("INSERT INTO `articles`(`id`, `name`, `contenu`) VALUES (:id, :name, :contenu)");
-        $stmt->bindValue(':id', $id);
+        $stmt->bindValue(':id',$idString);
         $stmt->bindValue(':name', $name);
         $stmt->bindValue(':contenu', $contenu);
         $stmt->execute();

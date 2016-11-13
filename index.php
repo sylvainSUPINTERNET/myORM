@@ -24,21 +24,20 @@ $article = new Articles(); // Entity of test
 
 
 //-----------------------------------------------------
-// SAVE(id,name,content) with use SET() ---> logs (Message : yes / Error: NA)
+// SAVE(name,content) with use SET() ---> logs (Message : yes / Error: NA)
 
-        # $id = $article->setId("1");
-        # $name = $article->setName("JolyTest");
-        # $contenu = $article->setContenu("My content for the test !");
-        # $article->save($id,$name,$contenu);
+         # $name = $article->setName("JolyTest");
+         # $contenu = $article->setContenu("My content for the test !");
+         # $article->save($name,$contenu);
 //-----------------------------------------------------
 
 
 
 //-----------------------------------------------------
-// CREATE(id,name,content) without SET() ---> logs (Message : yes / Error: NA)
+// CREATE(name,content) without SET() ---> logs (Message : yes / Error: NA)
 
-        # $test = $article->create("300","Leonidas","300 vs 1000");
-        # var_dump($test);
+         # $test = $article->create("LEEEEEE","300zaeazeaz 1000");
+         # var_dump($test);
 //-----------------------------------------------------
 
 

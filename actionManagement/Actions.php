@@ -5,9 +5,9 @@ abstract class Actions
 {
 
 //CRUD
-    public abstract function save($id, $name, $contenu);
+    public abstract function save($name, $contenu);
 
-    public abstract function create($id, $name, $contenu);
+    public abstract function create($name, $contenu);
 
     public abstract function remove($id);
 

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Dim 13 Novembre 2016 à 02:22
+-- Généré le :  Dim 13 Novembre 2016 à 02:43
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS `articles` (
 --
 
 INSERT INTO `articles` (`title`, `id`, `name`, `contenu`) VALUES
+('', 0, 'LEEEEEE', '300zaeazeaz 1000'),
 ('salut', 2, 'JEAN', 'LE CONTENU DE CHARLES TRES INTERESSANT DS DONC'),
 ('salut', 3, 'Jean', 'Deuxieme jean article'),
 ('', 4, 'Jean', 'TROISIEME aritcle  de jean ...'),
