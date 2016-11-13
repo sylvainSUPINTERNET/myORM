@@ -1,17 +1,13 @@
 <?php
 
-//__________________________________________ PDO connection
-require_once 'config/connection.php';
-
-
-//__________________________________________ Entity
 require_once 'Entity/Articles.php'; // Entity
 
 
 
 
 $article = new Articles();
-$article->getByJoin($pdo,'news','title');
+$test = $article->getByJoin('news','title');
+var_dump($test);
 
 
 

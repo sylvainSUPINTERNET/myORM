@@ -1,7 +1,7 @@
 <?php
+// connection
+require_once './config/PDOManager.php';
 
-// connection BDD
-require_once './config/connection.php';
 
 //function +
 require_once './abstract/actions.php';
@@ -12,6 +12,7 @@ require_once './interfaces/logManagement.php';
 
 //CAN ADD YOUR DEPENDENCIES IF ITS REQUIRED
 
+
 class Articles extends actions implements logManagement
 {
 
@@ -20,13 +21,6 @@ class Articles extends actions implements logManagement
     protected $contenu;
 
 
-    /*public function __construct($id,$name,$contenu)
-    {
-        $this->setId($id);
-        $this->setName($name);
-        $this->setContenu($contenu);
-    }
-*/
     public function getId()
     {
         return $this->id;
@@ -57,6 +51,13 @@ class Articles extends actions implements logManagement
         $this->contenu = $contenu;
     }
 
+    private function getBdd()
+    { //security with private
+        $pdo = new PDOManager();
+        $pdo = $pdo->bdd();
+        return $pdo;
+    }
+
     //LOG
     public function logMessage($stmt, $timeRequest)
     {
@@ -77,11 +78,11 @@ class Articles extends actions implements logManagement
     }
 
     // CRUD
-    public function save($pdo, $id, $name, $contenu) // utiliser setter getter sinon save marche pas
+    public function save($id, $name, $contenu) // utiliser setter getter sinon save marche pas
     {
         $timestamp_debut = microtime(true);
 
-        $stmt = $pdo->prepare("INSERT INTO `articles`(`id`, `name`, `contenu`) VALUES (:id, :name, :contenu)");
+        $stmt = $this->getBdd()->prepare("INSERT INTO `articles`(`id`, `name`, `contenu`) VALUES (:id, :name, :contenu)");
         $stmt->bindValue(':id', $this->getId());
         $stmt->bindValue(':name', $this->getName());
         $stmt->bindValue(':contenu', $this->getContenu());
@@ -94,11 +95,11 @@ class Articles extends actions implements logManagement
 
     }
 
-    public function create($pdo, $id, $name, $contenu) // create directement pas besoin de set les valeur au préalable
+    public function create($id, $name, $contenu) // create directement pas besoin de set les valeur au préalable
     {
         $timestamp_debut = microtime(true);
 
-        $stmt = $pdo->prepare("INSERT INTO `articles`(`id`, `name`, `contenu`) VALUES (:id, :name, :contenu)");
+        $stmt = $this->getBdd()->prepare("INSERT INTO `articles`(`id`, `name`, `contenu`) VALUES (:id, :name, :contenu)");
         $stmt->bindValue(':id', $id);
         $stmt->bindValue(':name', $name);
         $stmt->bindValue(':contenu', $contenu);
@@ -112,11 +113,11 @@ class Articles extends actions implements logManagement
     }
 
 
-    public function remove($pdo, $id)
+    public function remove($id)
     {
         $timestamp_debut = microtime(true);
 
-        $stmt = $pdo->prepare("DELETE FROM `articles` WHERE id = :id");
+        $stmt = $this->getBdd()->prepare("DELETE FROM `articles` WHERE id = :id");
         $stmt->bindValue(':id', $id);
         $stmt->execute();
 
@@ -126,7 +127,7 @@ class Articles extends actions implements logManagement
         return "Article id : " . $id . " bien delete !";
     }
 
-    public function update($pdo, $columnToChange, $newValue, $whereColum, $whereValue)
+    public function update($columnToChange, $newValue, $whereColum, $whereValue)
     {
         $timestamp_debut = microtime(true);
 
@@ -134,7 +135,7 @@ class Articles extends actions implements logManagement
         $param2 = "";
         $param1 = "'" . $newValue . "'";
         $param2 = "'" . $whereValue . "'";
-        $stmt = $pdo->prepare("UPDATE `articles` SET $columnToChange = $param1 WHERE $whereColum = $param2");
+        $stmt = $this->getBdd()->prepare("UPDATE `articles` SET $columnToChange = $param1 WHERE $whereColum = $param2");
         $stmt->execute();
 
         $timestamp_fin = microtime(true);
@@ -144,12 +145,12 @@ class Articles extends actions implements logManagement
         return $stmt;
     }
 
-    public function getAll($pdo)  //all
+    public function getAll()  //all
     {
         $timestamp_debut = microtime(true);
 
 
-        $stmt = $pdo->prepare("SELECT * FROM articles");
+        $stmt = $this->getBdd()->prepare("SELECT * FROM articles");
         $stmt->execute();
         $response = $stmt->fetchAll(PDO::FETCH_OBJ);
 
@@ -159,11 +160,11 @@ class Articles extends actions implements logManagement
         return $response;
     }
 
-    public function getById($pdo, $id)  //byId
+    public function getById($id)  //byId
     {
         $timestamp_debut = microtime(true);
 
-        $stmt = $pdo->prepare("SELECT * FROM articles WHERE id = :id");
+        $stmt = $this->getBdd()->prepare("SELECT * FROM articles WHERE id = :id");
         $stmt->bindValue('id', $id, PDO::PARAM_STR);
         $stmt->execute();
         $response = $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -174,11 +175,11 @@ class Articles extends actions implements logManagement
         return $response;
     }
 
-    public function getByName($pdo, $name) //byName
+    public function getByName($name) //byName
     {
         $timestamp_debut = microtime(true);
 
-        $stmt = $pdo->prepare("SELECT * FROM articles WHERE name = :name");
+        $stmt = $this->getBdd()->prepare("SELECT * FROM articles WHERE name = :name");
         $stmt->bindValue('name', $name, PDO::PARAM_STR);
         $stmt->execute();
         $response = $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -196,10 +197,10 @@ class Articles extends actions implements logManagement
         }
     }
 
-    public function orderByKeyword($pdo, $keyword)
+    public function orderByKeyword($keyword)
     {
         $timestamp_debut = microtime(true);
-        $stmt = $pdo->prepare("SELECT * FROM articles ORDER BY '$keyword'");
+        $stmt = $this->getBdd()->prepare("SELECT * FROM articles ORDER BY '$keyword'");
         $stmt->execute();
         $response = $stmt->fetchAll(PDO::FETCH_OBJ);
         if (empty($response) || $response == null) {
@@ -216,11 +217,11 @@ class Articles extends actions implements logManagement
 
     }
 
-    public function getWhere($pdo, $paramWhere)
+    public function getWhere($paramWhere)
     {
         $timestamp_debut = microtime(true);
 
-        $stmt = $pdo->prepare("SELECT * FROM `articles` WHERE `name` = '$paramWhere'");
+        $stmt = $this->getBdd()->prepare("SELECT * FROM `articles` WHERE `name` = '$paramWhere'");
         $stmt->execute();
         $response = $stmt->fetchAll(PDO::FETCH_OBJ);
         if (empty($response)) {
@@ -233,11 +234,11 @@ class Articles extends actions implements logManagement
         return $response;
     }
 
-    public function getByJoin($pdo, $columnToJoin, $paramToJoin)
+    public function getByJoin($columnToJoin, $paramToJoin)
     {
         $timestamp_debut = microtime(true);
 
-        $stmt = $pdo->prepare("SELECT * FROM `articles` INNER JOIN $columnToJoin ON articles.$paramToJoin = $columnToJoin.$paramToJoin");
+        $stmt = $this->getBdd()->prepare("SELECT * FROM `articles` INNER JOIN $columnToJoin ON articles.$paramToJoin = $columnToJoin.$paramToJoin");
         $stmt->execute();
         $response = $stmt->fetchAll(PDO::FETCH_OBJ);
         if (empty($response)) {
@@ -256,11 +257,11 @@ class Articles extends actions implements logManagement
     }
 
 
-    public function countAll($pdo)
+    public function countAll()
     {
         $timestamp_debut = microtime(true);
 
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM articles");
+        $stmt = $this->getBdd()->prepare("SELECT COUNT(*) FROM articles");
         $stmt->execute();
         $nbFind = $stmt->fetch();
         if ($nbFind == null) {
@@ -279,12 +280,12 @@ class Articles extends actions implements logManagement
 
     }
 
-    public function countBy($pdo, $column)
+    public function countBy($column)
     {
         $timestamp_debut = microtime(true);
 
         $paramColumn = $column;
-        $stmt = $pdo->prepare("SELECT COUNT($paramColumn) FROM articles");
+        $stmt = $this->getBdd()->prepare("SELECT COUNT($paramColumn) FROM articles");
         $stmt->execute();
         $nbFind = $stmt->fetch();
         if ($nbFind == null) {
@@ -302,14 +303,14 @@ class Articles extends actions implements logManagement
         }
     }
 
-    public function countWhere($pdo, $column, $paramWhere)
+    public function countWhere($column, $paramWhere)
     {
         $timestamp_debut = microtime(true);
 
         $paramColumn = $column;
         $where = $paramWhere;
 
-        $stmt = $pdo->prepare("SELECT COUNT($paramColumn) FROM articles WHERE $where");
+        $stmt = $this->getBdd()->prepare("SELECT COUNT($paramColumn) FROM articles WHERE $where");
         $stmt->execute();
         $nbFind = $stmt->fetch();
         if ($nbFind == null) {
@@ -327,13 +328,13 @@ class Articles extends actions implements logManagement
         }
     }
 
-    public function in($pdo, $paramWhere, $inValue)
+    public function in($paramWhere, $inValue)
     {
         $timestamp_debut = microtime(true);
 
         $where = $paramWhere;
         $value = "'" . $inValue . "'";
-        $stmt = $pdo->prepare("SELECT * FROM articles WHERE $where IN ($value)");
+        $stmt = $this->getBdd()->prepare("SELECT * FROM articles WHERE $where IN ($value)");
         $stmt->execute();
         $valueFind = $stmt->fetchAll(PDO::FETCH_OBJ);
         if (empty($valueFind)) {
