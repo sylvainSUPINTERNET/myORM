@@ -1,4 +1,4 @@
-# myORM - Joly Sylvain (2eme année Dev)
+# ORM - Joly Sylvain (2eme année - Dev)
 
 Bienvenue sur mon ORM :)
 
