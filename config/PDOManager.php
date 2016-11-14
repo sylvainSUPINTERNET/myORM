@@ -5,7 +5,7 @@ class PDOManager {
 
     private $host = ''; // mysql:host=127.0.0.1;dbname=NameBase
     private $user = ''; // root
-    private $passwod = ''; // ''
+    private $password = ''; // ''
 
 
     public function bdd(){
