@@ -27,7 +27,7 @@ class PDOManager {
     }
 
     public function getPassword(){
-        return $this->passwod;
+        return $this->password;
     }
 
 
