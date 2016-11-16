@@ -61,3 +61,5 @@ paramètres / gestion de logs (activer ou non)
 		php menu-console.php crud remove ===> Supprime un article
 
 
+
+**© Copyright 2016 SYLVAIN JOLY**
